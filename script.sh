@@ -144,6 +144,47 @@ parse_arguments "$@"
 # Validate inputs
 validate_inputs
 
+# Function to check if running on Ubuntu
+check_os_support() {
+    log "Checking operating system compatibility..."
+    
+    # Check if /etc/os-release exists
+    if [[ ! -f /etc/os-release ]]; then
+        error "Cannot detect operating system. This script only supports Ubuntu."
+    fi
+    
+    # Read OS information
+    source /etc/os-release
+    
+    # Check if it's Ubuntu
+    if [[ "$ID" != "ubuntu" ]]; then
+        error "Operating system not supported!
+
+Detected OS: $PRETTY_NAME
+Supported OS: Ubuntu 20.04 LTS, Ubuntu 22.04 LTS, Ubuntu 24.04 LTS
+
+This script is specifically designed for Ubuntu and may not work correctly on other distributions.
+Please use a fresh Ubuntu instance for best results."
+    fi
+    
+    # Check Ubuntu version (optional warning for very old versions)
+    local version_id="${VERSION_ID:-unknown}"
+    case "$version_id" in
+        "20.04"|"22.04"|"24.04")
+            success "Ubuntu $version_id detected - fully supported"
+            ;;
+        "18.04")
+            warning "Ubuntu $version_id detected - older version, may have compatibility issues"
+            ;;
+        *)
+            warning "Ubuntu $version_id detected - not specifically tested with this script"
+            ;;
+    esac
+}
+
+# Check OS compatibility
+check_os_support
+
 # Phase 1: System Checks & Prerequisites
 log "Starting N8N Installation Script - Phase 1"
 log "Checking system requirements and installing prerequisites..."

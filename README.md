@@ -105,7 +105,7 @@ ufw status
 
 ```bash
 # Download the script
-wget https://raw.githubusercontent.com/your-repo/n8n-script/main/script.sh
+wget https://raw.githubusercontent.com/iam-joey/n8n-script/main/script.sh
 
 # Make it executable
 chmod +x script.sh
