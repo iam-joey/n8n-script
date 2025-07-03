@@ -59,15 +59,23 @@ This script provides a **complete automated installation** of n8n (workflow auto
 
 ## 🚀 Installation Steps
 
-### Step 1: Update Your System
+### Step 1: Switch to Root User
+
+**⚠️ IMPORTANT:** Switch to root user before proceeding:
+
+```bash
+sudo su
+```
+
+### Step 2: Update Your System
 
 **⚠️ IMPORTANT:** Always update your system before running the script:
 
 ```bash
-sudo apt update && sudo apt upgrade -y
+apt update && apt upgrade -y
 ```
 
-### Step 2: Configure DNS
+### Step 3: Configure DNS
 
 Before running the script, ensure your domain points to your server:
 
@@ -76,24 +84,24 @@ Before running the script, ensure your domain points to your server:
 3. Wait for DNS propagation (5-60 minutes)
 4. Test DNS: `nslookup yourdomain.com`
 
-### Step 3: Configure Firewall
+### Step 4: Configure Firewall
 
 Ensure ports 80 and 443 are open:
 
 ```bash
 # Enable firewall
-sudo ufw enable
+ufw enable
 
 # Allow HTTP and HTTPS
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw allow 22/tcp
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw allow 22/tcp
 
 # Check status
-sudo ufw status
+ufw status
 ```
 
-### Step 4: Download and Run the Script
+### Step 5: Download and Run the Script
 
 ```bash
 # Download the script
@@ -158,10 +166,10 @@ chmod +x script.sh
 ### Ubuntu UFW (Uncomplicated Firewall)
 
 ```bash
-sudo ufw enable
-sudo ufw allow 22/tcp    # SSH
-sudo ufw allow 80/tcp    # HTTP
-sudo ufw allow 443/tcp   # HTTPS
+ufw enable
+ufw allow 22/tcp    # SSH
+ufw allow 80/tcp    # HTTP
+ufw allow 443/tcp   # HTTPS
 ```
 
 ### AWS Security Groups
@@ -225,7 +233,7 @@ dig yourdomain.com
 
 ```bash
 # Add user to docker group
-sudo usermod -aG docker $USER
+usermod -aG docker $USER
 
 # Logout and login again, or run:
 newgrp docker
@@ -281,29 +289,29 @@ docker start n8n
 
 ```bash
 # Check SSL certificate status
-sudo certbot certificates
+certbot certificates
 
 # Renew SSL certificate manually
-sudo certbot renew
+certbot renew
 
 # Test SSL renewal
-sudo certbot renew --dry-run
+certbot renew --dry-run
 ```
 
 ### Nginx Management
 
 ```bash
 # Check nginx status
-sudo systemctl status nginx
+systemctl status nginx
 
 # Restart nginx
-sudo systemctl restart nginx
+systemctl restart nginx
 
 # Test nginx configuration
-sudo nginx -t
+nginx -t
 
 # View nginx error logs
-sudo tail -f /var/log/nginx/error.log
+tail -f /var/log/nginx/error.log
 ```
 
 ## 🔒 Security Notes
