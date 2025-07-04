@@ -45,6 +45,7 @@ This script provides a **complete automated installation** of n8n (workflow auto
 ### 2. **Domain Name**
 
 - You must own a domain name (e.g., `yourdomain.com`)
+- Can be a root domain (`joey.com`) or subdomain (`hello.joey.com`)
 - Domain must be pointed to your server's IP address
 
 ### 3. **Server Requirements**
@@ -79,10 +80,19 @@ apt update && apt upgrade -y
 
 Before running the script, ensure your domain points to your server:
 
+**For Root Domain (e.g., `joey.com`):**
+
 1. Go to your domain registrar (GoDaddy, Cloudflare, etc.)
-2. Create an **A record**: `yourdomain.com` → `your-server-ip`
+2. Create an **A record**: `@` → `your-server-ip`
 3. Wait for DNS propagation (5-60 minutes)
-4. Test DNS: `nslookup yourdomain.com`
+4. Test DNS: `nslookup joey.com`
+
+**For Subdomain (e.g., `hello.joey.com`):**
+
+1. Go to your domain registrar (GoDaddy, Cloudflare, etc.)
+2. Create an **A record**: `hello` → `your-server-ip`
+3. Wait for DNS propagation (5-60 minutes)
+4. Test DNS: `nslookup hello.joey.com`
 
 ### Step 4: Configure Firewall
 
@@ -128,10 +138,20 @@ chmod +x script.sh
 ./script.sh --help
 ```
 
-### Example
+### Examples
+
+**Root Domain:**
 
 ```bash
-./script.sh --domain="n8n.example.com" --email="admin@example.com"
+./script.sh --domain="joey.com" --email="admin@joey.com"
+```
+
+**Subdomain:**
+
+```bash
+./script.sh --domain="n8n.joey.com" --email="admin@joey.com"
+./script.sh --domain="hello.joey.com" --email="admin@joey.com"
+./script.sh --domain="automation.joey.com" --email="admin@joey.com"
 ```
 
 ## 🔄 What This Script Does
@@ -192,7 +212,7 @@ gcloud compute firewall-rules create allow-https --allow tcp:443 --source-ranges
 
 ## 🌐 DNS Configuration
 
-### Required DNS Records
+### For Root Domain (e.g., `joey.com`)
 
 Create an **A record** in your domain's DNS settings:
 
@@ -201,14 +221,54 @@ Create an **A record** in your domain's DNS settings:
 | A    | @    | your-server-ip | 300 |
 | A    | www  | your-server-ip | 300 |
 
+### For Subdomain (e.g., `hello.joey.com`)
+
+Create an **A record** for the subdomain:
+
+| Type | Name  | Value          | TTL |
+| ---- | ----- | -------------- | --- |
+| A    | hello | your-server-ip | 300 |
+
+**Alternative: CNAME Record for Subdomain**
+
+| Type  | Name  | Value    | TTL |
+| ----- | ----- | -------- | --- |
+| CNAME | hello | joey.com | 300 |
+
+### DNS Record Comparison
+
+| Method           | Pros                                      | Cons                         | Best For                        |
+| ---------------- | ----------------------------------------- | ---------------------------- | ------------------------------- |
+| **A Record**     | Direct IP pointing, faster resolution     | Need to update if IP changes | Most common, reliable           |
+| **CNAME Record** | Follows main domain changes automatically | Extra DNS lookup step        | When IP might change frequently |
+
+### Common Subdomain Examples
+
+- `n8n.yourdomain.com` - Clear purpose identification
+- `automation.yourdomain.com` - Descriptive naming
+- `workflows.yourdomain.com` - Business-focused naming
+- `app.yourdomain.com` - Generic application naming
+
 ### Verify DNS
+
+**For Root Domain:**
 
 ```bash
 # Check if domain resolves to your server
-nslookup yourdomain.com
-dig yourdomain.com
+nslookup joey.com
+dig joey.com
 
 # Should return your server's IP address
+```
+
+**For Subdomain:**
+
+```bash
+# Check if subdomain resolves to your server
+nslookup hello.joey.com
+dig hello.joey.com
+
+# Should return your server's IP address (A record) or main domain (CNAME)
 ```
 
 ## 🔧 Troubleshooting
